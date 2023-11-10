@@ -1,0 +1,63 @@
+import os
+import json
+from datetime import datetime
+
+# Function to load expenses from a file
+def load_expenses():
+    if os.path.exists('expenses.json'):
+        with open('expenses.json', 'r') as file:
+            return json.load(file)
+    else:
+        return []
+
+# Function to save expenses to a file
+def save_expenses(expenses):
+    with open('expenses.json', 'w') as file:
+        json.dump(expenses, file, indent=2)
+
+# Function to add a new expense
+def add_expense(date, description, amount, expenses):
+    expenses.append({
+        'date': date,
+        'description': description,
+        'amount': amount
+    })
+    save_expenses(expenses)
+
+# Function to generate a monthly report
+def generate_monthly_report(expenses):
+    total_expense = sum(expense['amount'] for expense in expenses)
+    return f"Monthly Report\nTotal Expense: ${total_expense:.2f}"
+
+# Main function
+def main():
+    expenses = load_expenses()
+
+    while True:
+        print("\nExpense Tracker Menu:")
+        print("1. Add Expense")
+        print("2. Generate Monthly Report")
+        print("3. Exit")
+
+        choice = input("Enter your choice (1/2/3): ")
+
+        if choice == '1':
+            date = input("Enter the date (YYYY-MM-DD): ")
+            description = input("Enter the description: ")
+            amount = float(input("Enter the amount: "))
+            add_expense(date, description, amount, expenses)
+            print("Expense added successfully!")
+
+        elif choice == '2':
+            report = generate_monthly_report(expenses)
+            print(report)
+
+        elif choice == '3':
+            print("Exiting Expense Tracker. Goodbye!")
+            break
+
+        else:
+            print("Invalid choice. Please enter 1, 2, or 3.")
+
+if __name__ == "__main__":
+    main()
